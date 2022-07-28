@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 
 //ROUTES
 const routes = require("./routes/routes");
-app.use(routes);
+app.use('/api/',routes);
 
 //EXPORTATION
 module.exports = app;
