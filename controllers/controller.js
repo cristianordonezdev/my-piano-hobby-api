@@ -14,13 +14,56 @@ const controller = {
     request.getConnection((err, connection) => {
       if (err) return response.status(400).send({status: 'error', message: err})
 
-      connection.query('SELECT * FROM repertoire', (err, rows) => {
+      connection.query('SELECT * FROM repertoire ORDER BY -created_at', (err, rows) => {
         if (err) return response.status(400).send({status: 'error', message: err})
         return response.status(200).send({
           status: 'ok',
           rows
         });
       });
+    });
+  },
+  editOne: (request, response) => {
+    request.getConnection((err, connection) => {
+      if (err) return response.status(400).send({status: 'error', message: err})
+
+      const body = request.body;
+      const name_validator = !validator.isEmpty(body.name);
+      const author_validator = !validator.isEmpty(body.author);
+      const url_validator = validator.isURL(body.url);
+      //const file = request.file;
+      if (name_validator, author_validator, url_validator) {
+        const updated_song = {
+          name: body.name ? body.name : null,
+          author: body.author ? body.author : null,
+          url: body.url ? body.url : null,
+          status: body.status ? body.status : null,
+        };
+        // console.log(updated_song)
+        // const uploadImage = async () => {
+        //   const uploader = async (path) => await cloudinary.uploads(path, 'mypianohobby');
+        //     const {path} = file;
+        //     const new_path = await uploader(path);
+        //     fs.unlinkSync(path);
+        //     return new_path;
+        // }
+        // if (file) {
+        //   uploadImage().then((response) => {
+        //     const upd = {partiture: response.url};
+        //     connection.query('UPDATE repertoire SET ? WHERE uuid = ?', [upd, new_song.uuid], () => {});
+        //   });
+        // }
+        connection.query(`UPDATE repertoire SET ? WHERE uuid = ?;`, [updated_song, body.uuid], (err, rows) => {
+          if (err) return response.status(400).send({status: 'error', message: err});
+          return response.status(200).send({
+            status: 'ok',
+            updated_song,
+            message: 'The song has been updated successfully'
+          });
+        });
+      } else {
+        return response.status(400).send({status: 'error', message: 'Data is incorrect'});
+      }
     });
   },
   addOne: (request, response) => {
@@ -58,6 +101,7 @@ const controller = {
           if (err) return response.status(400).send({status: 'error', message: err});
           return response.status(200).send({
             status: 'ok',
+            new_song,
             message: 'The song has been saved successfully'
           });
         });
