@@ -17,6 +17,7 @@ router.put('/edit-one', controller.editOne);
 // router.post("/save", reperController.save);
 // router.put("/update/:id", reperController.update);
 router.delete("/delete-one/:uuid", controller.deleteOne);
+router.post("/stadistic", controller.estadistic);
 // router.get("/search/:id", reperController.search);
 
 module.exports = router;

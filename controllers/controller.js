@@ -125,6 +125,19 @@ const controller = {
       })
     });
   },
+  estadistic: (request, response) => {
+    request.getConnection((err, connection) => {
+      if (err) return response.status(400).send({status: 'error', message: err});
+      const obj = {
+        uuid: uuid.v4(),
+        created_at: new Date(),
+        minutes: request.body.minutes,
+      };
+      connection.query('INSERT INTO stadistics SET ? ', [obj], (err, result) => {
+        return response.status(200).send({status: 'ok', message: 'The stadistics has been saved successfully'})
+      });
+    });
+  }
 };
 
 module.exports = controller;
